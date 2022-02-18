@@ -1,0 +1,77 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31903.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F7B84B66-B051-4494-803B-A60D1CB56312}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8909F92D-1A58-4A58-A47E-1E46F84CDD44}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EC28B66D-CC8B-42DD-A802-6C9311BAAF86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstraction", "Abstraction", "{3DC1ADAD-F56F-4AA5-9630-E9E994B12270}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elasticsearch", "Elasticsearch", "{3D0535BF-1A4A-4F89-BABC-2C7B74654B5F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MongoDB", "MongoDB", "{7FFC5837-4231-443B-AE93-DC7AFAF852E3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hephaestus.Repository.Abstraction", "src\Abstraction\Hephaestus.Repository.Abstraction\Hephaestus.Repository.Abstraction.csproj", "{D83D66CF-E6E0-4531-A7EF-9E3AF9DC3A4F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hephaestus.Repository.Elasticsearch", "src\Elasticsearch\Hephaestus.Repository.Elasticsearch\Hephaestus.Repository.Elasticsearch.csproj", "{E0913ABC-F1F9-4645-A4A7-868CEDBBC31C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hephaestus.Repository.MongoDB", "src\MongoDB\Hephaestus.Repository.MongoDB\Hephaestus.Repository.MongoDB.csproj", "{B95DC9AC-3A3A-4A41-B0D1-9787ACF24F5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{F2D93383-EDE5-4F06-80D6-CF77A33F3CCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hphaestus.Elasticsearch.tests", "tests\Hphaestus.Elasticsearch.tests\Hphaestus.Elasticsearch.tests.csproj", "{5CC299CC-8B45-47F5-B54E-CA45FFDE7F8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebApiApplicationWithElasticsearch", "SampleWebApiApplicationWithElasticsearch\SampleWebApiApplicationWithElasticsearch.csproj", "{92215AE8-9F35-4E0F-A31F-49E481799E41}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D83D66CF-E6E0-4531-A7EF-9E3AF9DC3A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D83D66CF-E6E0-4531-A7EF-9E3AF9DC3A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D83D66CF-E6E0-4531-A7EF-9E3AF9DC3A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D83D66CF-E6E0-4531-A7EF-9E3AF9DC3A4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0913ABC-F1F9-4645-A4A7-868CEDBBC31C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0913ABC-F1F9-4645-A4A7-868CEDBBC31C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0913ABC-F1F9-4645-A4A7-868CEDBBC31C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0913ABC-F1F9-4645-A4A7-868CEDBBC31C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B95DC9AC-3A3A-4A41-B0D1-9787ACF24F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B95DC9AC-3A3A-4A41-B0D1-9787ACF24F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B95DC9AC-3A3A-4A41-B0D1-9787ACF24F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B95DC9AC-3A3A-4A41-B0D1-9787ACF24F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CC299CC-8B45-47F5-B54E-CA45FFDE7F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CC299CC-8B45-47F5-B54E-CA45FFDE7F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CC299CC-8B45-47F5-B54E-CA45FFDE7F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CC299CC-8B45-47F5-B54E-CA45FFDE7F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92215AE8-9F35-4E0F-A31F-49E481799E41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92215AE8-9F35-4E0F-A31F-49E481799E41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92215AE8-9F35-4E0F-A31F-49E481799E41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92215AE8-9F35-4E0F-A31F-49E481799E41}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3DC1ADAD-F56F-4AA5-9630-E9E994B12270} = {8909F92D-1A58-4A58-A47E-1E46F84CDD44}
+		{3D0535BF-1A4A-4F89-BABC-2C7B74654B5F} = {8909F92D-1A58-4A58-A47E-1E46F84CDD44}
+		{7FFC5837-4231-443B-AE93-DC7AFAF852E3} = {8909F92D-1A58-4A58-A47E-1E46F84CDD44}
+		{D83D66CF-E6E0-4531-A7EF-9E3AF9DC3A4F} = {3DC1ADAD-F56F-4AA5-9630-E9E994B12270}
+		{E0913ABC-F1F9-4645-A4A7-868CEDBBC31C} = {3D0535BF-1A4A-4F89-BABC-2C7B74654B5F}
+		{B95DC9AC-3A3A-4A41-B0D1-9787ACF24F5C} = {7FFC5837-4231-443B-AE93-DC7AFAF852E3}
+		{5CC299CC-8B45-47F5-B54E-CA45FFDE7F8C} = {EC28B66D-CC8B-42DD-A802-6C9311BAAF86}
+		{92215AE8-9F35-4E0F-A31F-49E481799E41} = {F2D93383-EDE5-4F06-80D6-CF77A33F3CCB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62704F41-ADE7-4AC7-8ABF-ACFB282FB6F3}
+	EndGlobalSection
+EndGlobal

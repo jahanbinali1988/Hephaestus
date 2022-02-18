@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+
+    <LangVersion>Latest</LangVersion>
+
+    <Copyright></Copyright>
+    <Company>Sofa</Company>
+    <Authors>AliAkbarJahanbin</Authors>
+    <Product>Hephaestus.Repository Repository</Product>
+
+    <!--Main framework version-->
+    <NetCoreAppTargetFramework>net5.0</NetCoreAppTargetFramework>
+    <MicrosoftPackagesVersion>net5.0</MicrosoftPackagesVersion>
+  </PropertyGroup>
+</Project>
