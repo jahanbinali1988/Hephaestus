@@ -1,9 +1,9 @@
 ﻿using Hephaestus.Repository.Abstraction.Base;
 using Hephaestus.Repository.Abstraction.Contract;
-using SampleWebApiApplicationWithElasticsearch.Models.DomainEvent;
+using SampleWebApiApplicationWithMongoDb.Models.DomainEvent;
 using System;
 
-namespace SampleWebApiApplicationWithElasticsearch.Models
+namespace SampleWebApiApplicationWithMongoDb.Models
 {
     public class PersonEntity : Entity, IAggregateRoot
     {

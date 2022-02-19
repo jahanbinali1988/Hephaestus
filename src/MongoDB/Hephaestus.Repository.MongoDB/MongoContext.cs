@@ -1,7 +1,8 @@
-﻿using Hephaestus.Repository.Abstraction.Base;
-using Hephaestus.Repository.Abstraction.Contract;
+﻿using Hephaestus.Repository.Abstraction.Contract;
 using Hephaestus.Repository.MongoDB.Configure;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using System;
 using System.Collections.Concurrent;
@@ -12,28 +13,81 @@ using System.Threading.Tasks;
 
 namespace Hephaestus.Repository.MongoDB
 {
-    public class MongoContext : IMongoContext
+    public class MongoContext : IDisposable
     {
-        //Database should be private, after test 
-        public IMongoDatabase Database { get; set; }
-        public IClientSessionHandle Session { get; set; }
-        public MongoClient MongoClient { get; set; }
-        private readonly ConcurrentQueue<Func<Task>> _commands;
-        private readonly ConcurrentQueue<IDomainEvent> _domainEvents;
+        protected IMongoDatabase Database { get; set; }
+        protected MongoClient MongoClient { get; set; }
+        private IClientSessionHandle Session { get; set; }
+        private ConcurrentQueue<Func<Task>> _commands;
+        private ConcurrentQueue<IDomainEvent> _domainEvents;
+        private readonly MongoDbCommandDispatcher _commandDispatcher;
         private readonly MongoDbConfig _config;
         public MongoContext(IOptions<MongoDbConfig> option)
         {
-            _config = option.Value;
+            _config = new MongoDbConfig(option.Value.ConnectionString, option.Value.DatabaseName);
             _commands = new ConcurrentQueue<Func<Task>>();
+            _domainEvents = new ConcurrentQueue<IDomainEvent>();
+            _commandDispatcher = new MongoDbCommandDispatcher();
         }
 
-        private void Configure()
+        public void Configure()
         {
             if (MongoClient != null)
                 return;
 
-            MongoClient = new MongoClient(_config.ConnectionString);
+            var mongoClientSettings = new MongoUrl(_config.ConnectionString);
+            MongoClient = new MongoClient(mongoClientSettings);
             Database = MongoClient.GetDatabase(_config.DatabaseName);
+        }
+
+        protected virtual void OnModelCreating()
+        {
+            Configure();
+
+            BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
+            //BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
+
+            // Conventions
+            var pack = new ConventionPack
+                {
+                    new IgnoreExtraElementsConvention(true),
+                    new IgnoreIfDefaultConvention(true)
+                };
+            ConventionRegistry.Register("My Solution Conventions", pack, t => true);
+        }
+
+
+        #region Commands
+        public void AddCommand(Func<Task> func)
+        {
+            _commands.Enqueue(func);
+        }
+
+        #endregion
+
+        #region SaveChanges
+        public async Task SaveChangesAsync(CancellationToken token = default)
+        {
+            Configure();
+
+            using (Session = await MongoClient.StartSessionAsync())
+            {
+                Session.StartTransaction();
+
+                var commandTasks = _commands.Select(c => c());
+
+                await Task.WhenAll(commandTasks);
+
+                await Session.CommitTransactionAsync();
+            }
+        }
+        #endregion
+
+        public IMongoCollection<T> GetCollection<T>(string name)
+        {
+            Configure();
+
+            return Database.GetCollection<T>(name);
         }
 
         public IReadOnlyCollection<IDomainEvent> GetDomainEvents()
@@ -45,44 +99,6 @@ namespace Hephaestus.Repository.MongoDB
             }
 
             return list;
-
-        }
-
-        public void AddCommand<T, TKey>(T model, Func<Task> func, CancellationToken token) where T : Entity<TKey>, new()
-        {
-            if (model.DomainEvents != null && model.DomainEvents.Count != 0)
-                foreach (var domainEvent in model.DomainEvents)
-                {
-                    _domainEvents.Enqueue(domainEvent);
-                }
-
-            _commands.Enqueue(() =>
-                AddAsync<T>(model, func, token));
-        }
-
-        public IMongoCollection<T> GetCollection<T>(string name)
-        {
-            Configure();
-
-            return Database.GetCollection<T>(name);
-        }
-
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            Configure();
-
-            using (Session = await MongoClient.StartSessionAsync(cancellationToken: cancellationToken))
-            {
-                Session.StartTransaction();
-
-                var commandTasks = _commands.Select(c => c());
-
-                await Task.WhenAll(commandTasks);
-
-                await Session.CommitTransactionAsync();
-            }
-
-            return _commands.Count;
         }
 
         public void Dispose()

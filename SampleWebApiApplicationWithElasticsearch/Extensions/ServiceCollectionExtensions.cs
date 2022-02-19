@@ -30,7 +30,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Extensions
 
         public static IServiceCollection AddElasticSearchClient(this IServiceCollection services, ElasticsearchConfig config)
         {
-            services.AddSingleton<SampleElasticDbContext>(provider =>
+            services.AddScoped<SampleElasticDbContext>(provider =>
             {
                 var context = new SampleElasticDbContext(Options.Create<ElasticsearchConfig>(config));
                 context.Configure();

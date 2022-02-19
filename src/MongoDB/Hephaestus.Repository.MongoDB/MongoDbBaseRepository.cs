@@ -9,9 +9,9 @@ namespace Hephaestus.Repository.MongoDB
 {
     public abstract class MongoDbBaseRepository<T, TKey> : IRepository<T, TKey> where T : Entity<TKey>, IAggregateRoot
     {
-        protected readonly IMongoContext Context;
+        protected readonly MongoContext Context;
         protected IMongoCollection<T> DbSet;
-        protected MongoDbBaseRepository(IMongoContext context)
+        protected MongoDbBaseRepository(MongoContext context)
         {
             Context = context;
 

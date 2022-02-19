@@ -20,8 +20,8 @@ namespace Hephaestus.Repository.Elasticsearch
         protected ConnectionSettings _connectionSettings;
         private ConcurrentQueue<EntityContextInfo> _entityPendingChanges;
         private ConcurrentQueue<IDomainEvent> _domainEvents;
-        private readonly ElasticsearchConfig _config;
         private readonly ElsticDbCommandDispatcher _commandDispatcher;
+        private readonly ElasticsearchConfig _config;
         public ElasticDbContext(IOptions<ElasticsearchConfig> option)
         {
             _config = new ElasticsearchConfig(option.Value.ConnectionString);
@@ -108,16 +108,6 @@ namespace Hephaestus.Repository.Elasticsearch
             _entityPendingChanges.Enqueue(data);
         }
 
-        public IReadOnlyCollection<IDomainEvent> GetDomainEvents()
-        {
-            var list = new List<IDomainEvent>();
-            while (_domainEvents.TryDequeue(out var domainEvent))
-            {
-                list.Add(domainEvent);
-            }
-
-            return list;
-        }
         #endregion
 
         #region SaveChanges
@@ -134,6 +124,17 @@ namespace Hephaestus.Repository.Elasticsearch
             }
         }
         #endregion
+
+        public IReadOnlyCollection<IDomainEvent> GetDomainEvents()
+        {
+            var list = new List<IDomainEvent>();
+            while (_domainEvents.TryDequeue(out var domainEvent))
+            {
+                list.Add(domainEvent);
+            }
+
+            return list;
+        }
 
         public void Dispose()
         {

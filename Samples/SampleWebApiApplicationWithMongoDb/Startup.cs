@@ -4,9 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using SampleWebApiApplicationWithElasticsearch.Extensions;
+using SampleWebApiApplicationWithMongoDb.Extensions;
 
-namespace SampleWebApiApplicationWithElasticsearch
+namespace SampleWebApiApplicationWithMongoDb
 {
     public class Startup
     {
@@ -21,11 +21,11 @@ namespace SampleWebApiApplicationWithElasticsearch
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDependencies(Configuration);
-            
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleWebApiApplicationWithElasticsearch", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleWebApiApplicationWithMongoDb", Version = "v1" });
             });
         }
 
@@ -36,7 +36,7 @@ namespace SampleWebApiApplicationWithElasticsearch
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleWebApiApplicationWithElasticsearch v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleWebApiApplicationWithMongoDb v1"));
             }
 
             app.UseHttpsRedirection();
