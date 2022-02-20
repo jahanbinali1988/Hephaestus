@@ -7,18 +7,17 @@ using System.Threading.Tasks;
 
 namespace Hephaestus.Repository.Elasticsearch.Provider
 {
-    public class DeleteProvider : ICommandProvider
+    internal class DeleteProvider<T> : ICommandProvider<T> where T : Entity
     {
         private readonly IElasticClient _elasticClient;
-
-        public DeleteProvider(IElasticClient elasticClient)
+        internal DeleteProvider(IElasticClient elasticClient)
         {
             this._elasticClient = elasticClient;
         }
 
-        public async Task ExecuteAsync(EntityContextInfo entity, CancellationToken token)
+        public async Task ExecuteAsync(EntityContextInfo<T> entity, CancellationToken token)
         {
-            var deleteResponse = await _elasticClient.DeleteAsync(new DeleteRequest(entity.EntityType, new Id(entity.Id)), token).ConfigureAwait(true);
+            var deleteResponse = await _elasticClient.DeleteAsync(new DeleteRequest(entity.EntityType, new Id(entity.Document.Id)), token).ConfigureAwait(true);
             deleteResponse.EnsureRequestSuccess();
         }
     }

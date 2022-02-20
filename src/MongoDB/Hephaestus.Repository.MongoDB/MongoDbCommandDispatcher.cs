@@ -6,7 +6,7 @@ namespace Hephaestus.Repository.MongoDB
 {
     internal class MongoDbCommandDispatcher
     {
-        public async Task DispatchAsync(EntityContextInfo entityContext, CancellationToken cancellationToken)
+        public async Task DispatchAsync(EntityContextInfo<Entity> entityContext, CancellationToken cancellationToken)
         {
             await entityContext.CommandProvider.ExecuteAsync(entityContext, cancellationToken);
         }

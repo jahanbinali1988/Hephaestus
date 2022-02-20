@@ -3,7 +3,6 @@ using Hephaestus.Repository.Elasticsearch;
 using Hephaestus.Repository.Elasticsearch.Configure;
 using Microsoft.Extensions.Options;
 using Moq;
-using System;
 using Xunit;
 
 namespace Hphaestus.Elasticsearch.tests
@@ -21,7 +20,7 @@ namespace Hphaestus.Elasticsearch.tests
         public async void InsertObject_probably_works_coeewctly()
         {
             var testEntity = new TestEntity();
-            _dbContext.AddDocument<TestEntity, long>(testEntity);
+            _dbContext.AddDocument<TestEntity>(testEntity);
             await _dbContext.SaveChangesAsync();
 
         }

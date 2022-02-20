@@ -20,6 +20,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Extensions
                 ConnectionString = elasticsearchConfig
             };
 
+            services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
 

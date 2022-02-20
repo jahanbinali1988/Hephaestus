@@ -18,14 +18,14 @@ namespace Hephaestus.Repository.Elasticsearch
     {
         protected IElasticClient _elasticClient;
         protected ConnectionSettings _connectionSettings;
-        private ConcurrentQueue<EntityContextInfo> _entityPendingChanges;
+        private ConcurrentQueue<EntityContextInfo<Entity>> _entityPendingChanges;
         private ConcurrentQueue<IDomainEvent> _domainEvents;
         private readonly ElsticDbCommandDispatcher _commandDispatcher;
         private readonly ElasticsearchConfig _config;
         public ElasticDbContext(IOptions<ElasticsearchConfig> option)
         {
             _config = new ElasticsearchConfig(option.Value.ConnectionString);
-            _entityPendingChanges = new ConcurrentQueue<EntityContextInfo>();
+            _entityPendingChanges = new ConcurrentQueue<EntityContextInfo<Entity>>();
             _domainEvents = new ConcurrentQueue<IDomainEvent>();
             _commandDispatcher = new ElsticDbCommandDispatcher();
         }
@@ -42,7 +42,7 @@ namespace Hephaestus.Repository.Elasticsearch
             };
             _connectionSettings = new ConnectionSettings(pool);
             _elasticClient = new ElasticClient(_connectionSettings);
-            
+
             OnModelCreating();
         }
 
@@ -52,7 +52,7 @@ namespace Hephaestus.Repository.Elasticsearch
         }
 
         #region Commands
-        public void AddDocument<T, TKey>(T model) where T : Entity<TKey>
+        public async Task AddDocument<T>(T model) where T : Entity
         {
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
@@ -60,17 +60,19 @@ namespace Hephaestus.Repository.Elasticsearch
                     _domainEvents.Enqueue(domainEvent);
                 }
 
-            var data = new EntityContextInfo { 
-                Id = default, 
-                EntityType = model.GetType(), 
-                Document = model, 
-                CommandType = CommandType.Add, 
-                CommandProvider = new InsertProvider(_elasticClient)
+            var data = new EntityContextInfo<Entity>()
+            {
+                EntityType = model.GetType(),
+                Document = model,
+                CommandType = CommandType.Add,
+                CommandProvider = new InsertProvider<Entity>(_elasticClient)
             };
             _entityPendingChanges.Enqueue(data);
+
+            await Task.CompletedTask;
         }
 
-        public void UpdateDocument<T, TKey>(T model, TKey id) where T : Entity<TKey>
+        public async Task UpdateDocument<T>(T model) where T : Entity
         {
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
@@ -78,18 +80,19 @@ namespace Hephaestus.Repository.Elasticsearch
                     _domainEvents.Enqueue(domainEvent);
                 }
 
-            var data = new EntityContextInfo 
-                { 
-                    Id = id, 
-                    EntityType = model.GetType(), 
-                    Document = model, 
-                    CommandType = CommandType.Update,
-                    CommandProvider = new UpdateProvider(_elasticClient)
-                };
+            var data = new EntityContextInfo<Entity>()
+            {
+                EntityType = model.GetType(),
+                Document = model,
+                CommandType = CommandType.Update,
+                CommandProvider = new UpdateProvider<Entity>(_elasticClient)
+            };
             _entityPendingChanges.Enqueue(data);
+
+            await Task.CompletedTask;
         }
 
-        public void DeleteDocument<T, TKey>(T model) where T : Entity<TKey>
+        public async Task DeleteDocument<T>(T model) where T : Entity
         {
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
@@ -97,15 +100,16 @@ namespace Hephaestus.Repository.Elasticsearch
                     _domainEvents.Enqueue(domainEvent);
                 }
 
-            var data = new EntityContextInfo 
-            { 
-                Id = model.Id, 
-                EntityType = typeof(T), 
-                Document = null, 
+            var data = new EntityContextInfo<Entity>()
+            {
+                EntityType = typeof(T),
+                Document = model,
                 CommandType = CommandType.Delete,
-                CommandProvider = new DeleteProvider(_elasticClient)
+                CommandProvider = new DeleteProvider<Entity>(_elasticClient)
             };
             _entityPendingChanges.Enqueue(data);
+
+            await Task.CompletedTask;
         }
 
         #endregion
@@ -118,9 +122,9 @@ namespace Hephaestus.Repository.Elasticsearch
             if (_entityPendingChanges.Count == 0)
                 throw new ElasticsearchClientException("Could not found entity to update");
 
-            while (_entityPendingChanges.TryDequeue(out var task))
+            while (_entityPendingChanges.TryDequeue(out var contextInfo))
             {
-                await _commandDispatcher.DispatchAsync(task, token);
+                await _commandDispatcher.DispatchAsync(contextInfo, token);
             }
         }
         #endregion

@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace Hephaestus.Repository.Abstraction.Contract
 {
-    public interface ICommandProvider
+    public interface ICommandProvider<T> where T : Entity
     {
-        public Task ExecuteAsync(EntityContextInfo entity, CancellationToken token);
+        public Task ExecuteAsync(EntityContextInfo<T> context, CancellationToken token);
     }
 }

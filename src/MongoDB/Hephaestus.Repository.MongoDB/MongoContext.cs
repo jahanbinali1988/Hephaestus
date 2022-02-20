@@ -1,31 +1,29 @@
-﻿using Hephaestus.Repository.Abstraction.Contract;
+﻿using Hephaestus.Repository.Abstraction.Base;
+using Hephaestus.Repository.Abstraction.Contract;
 using Hephaestus.Repository.MongoDB.Configure;
+using Hephaestus.Repository.MongoDB.Provider;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Hephaestus.Repository.MongoDB
 {
-    public class MongoContext : IDisposable
+    public abstract class MongoContext : IDisposable
     {
         protected IMongoDatabase Database { get; set; }
         protected MongoClient MongoClient { get; set; }
-        private IClientSessionHandle Session { get; set; }
-        private ConcurrentQueue<Func<Task>> _commands;
+        private ConcurrentQueue<EntityContextInfo<Entity>> _entityPendingChanges;
         private ConcurrentQueue<IDomainEvent> _domainEvents;
         private readonly MongoDbCommandDispatcher _commandDispatcher;
         private readonly MongoDbConfig _config;
         public MongoContext(IOptions<MongoDbConfig> option)
         {
             _config = new MongoDbConfig(option.Value.ConnectionString, option.Value.DatabaseName);
-            _commands = new ConcurrentQueue<Func<Task>>();
+            _entityPendingChanges = new ConcurrentQueue<EntityContextInfo<Entity>>();
             _domainEvents = new ConcurrentQueue<IDomainEvent>();
             _commandDispatcher = new MongoDbCommandDispatcher();
         }
@@ -42,27 +40,62 @@ namespace Hephaestus.Repository.MongoDB
 
         protected virtual void OnModelCreating()
         {
-            Configure();
-
-            BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
-            //BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
-
-            // Conventions
-            var pack = new ConventionPack
-                {
-                    new IgnoreExtraElementsConvention(true),
-                    new IgnoreIfDefaultConvention(true)
-                };
-            ConventionRegistry.Register("My Solution Conventions", pack, t => true);
         }
-
 
         #region Commands
-        public void AddCommand(Func<Task> func)
+        public void AddDocument<T>(T model) where T : Entity
         {
-            _commands.Enqueue(func);
+            if (model.DomainEvents != null && model.DomainEvents.Count != 0)
+                foreach (var domainEvent in model.DomainEvents)
+                {
+                    _domainEvents.Enqueue(domainEvent);
+                }
+
+            var contextInfo = new EntityContextInfo<Entity>()
+            {
+                EntityType = model.GetType(),
+                Document = model,
+                CommandType = CommandType.Add,
+                CommandProvider = new InsertProvider<Entity>(Database.GetCollection<Entity>(model.GetType().Name))
+            };
+            _entityPendingChanges.Enqueue(contextInfo);
         }
 
+        public void UpdateDocument<T>(T model) where T : Entity
+        {
+            if (model.DomainEvents != null && model.DomainEvents.Count != 0)
+                foreach (var domainEvent in model.DomainEvents)
+                {
+                    _domainEvents.Enqueue(domainEvent);
+                }
+
+            var contextInfo = new EntityContextInfo<Entity>()
+            {
+                EntityType = model.GetType(),
+                Document = model,
+                CommandType = CommandType.Update,
+                CommandProvider = new UpdateProvider<Entity>(Database.GetCollection<Entity>(model.GetType().Name))
+            };
+            _entityPendingChanges.Enqueue(contextInfo);
+        }
+
+        public void DeleteDocument<T>(T model) where T : Entity
+        {
+            if (model.DomainEvents != null && model.DomainEvents.Count != 0)
+                foreach (var domainEvent in model.DomainEvents)
+                {
+                    _domainEvents.Enqueue(domainEvent);
+                }
+
+            var contextInfo = new EntityContextInfo<Entity>()
+            {
+                EntityType = model.GetType(),
+                Document = model,
+                CommandType = CommandType.Delete,
+                CommandProvider = new DeleteProvider<Entity>(Database.GetCollection<Entity>(model.GetType().Name))
+            };
+            _entityPendingChanges.Enqueue(contextInfo);
+        }
         #endregion
 
         #region SaveChanges
@@ -70,15 +103,12 @@ namespace Hephaestus.Repository.MongoDB
         {
             Configure();
 
-            using (Session = await MongoClient.StartSessionAsync())
+            if (_entityPendingChanges.Count == 0)
+                throw new MongoConfigurationException("Could not found entity to update");
+
+            while (_entityPendingChanges.TryDequeue(out var contextInfo))
             {
-                Session.StartTransaction();
-
-                var commandTasks = _commands.Select(c => c());
-
-                await Task.WhenAll(commandTasks);
-
-                await Session.CommitTransactionAsync();
+                await _commandDispatcher.DispatchAsync(contextInfo, token);
             }
         }
         #endregion
@@ -103,7 +133,6 @@ namespace Hephaestus.Repository.MongoDB
 
         public void Dispose()
         {
-            Session?.Dispose();
             GC.SuppressFinalize(this);
         }
 

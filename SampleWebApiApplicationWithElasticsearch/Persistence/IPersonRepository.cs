@@ -1,8 +1,8 @@
 ﻿using Hephaestus.Repository.Abstraction.Contract;
-using SampleWebApiApplicationWithMongoDb.Models;
+using SampleWebApiApplicationWithElasticsearch.Models;
 using System;
 
-namespace SampleWebApiApplicationWithMongoDb.Persistence
+namespace SampleWebApiApplicationWithElasticsearch.Persistence
 {
     public interface IPersonRepository : IRepository<PersonEntity, Guid>
     {

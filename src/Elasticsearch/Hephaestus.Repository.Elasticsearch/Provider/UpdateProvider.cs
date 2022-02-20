@@ -7,16 +7,15 @@ using System.Threading.Tasks;
 
 namespace Hephaestus.Repository.Elasticsearch.Provider
 {
-    public class UpdateProvider : ICommandProvider
+    internal class UpdateProvider<T> : ICommandProvider<T> where T : Entity
     {
         private readonly IElasticClient _elasticClient;
-
-        public UpdateProvider(IElasticClient elasticClient)
+        internal UpdateProvider(IElasticClient elasticClient)
         {
             this._elasticClient = elasticClient;
         }
 
-        public async Task ExecuteAsync(EntityContextInfo entity, CancellationToken token)
+        public async Task ExecuteAsync(EntityContextInfo<T> entity, CancellationToken token)
         {
             var insertResponse = await _elasticClient.IndexAsync(entity.Document, u => u.Index(entity.EntityType), token).ConfigureAwait(true);
             insertResponse.EnsureRequestSuccess();

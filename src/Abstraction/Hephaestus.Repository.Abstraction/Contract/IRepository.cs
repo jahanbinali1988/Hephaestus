@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Hephaestus.Repository.Abstraction.Contract
 {
-    public interface IRepository<TEntity, Tkey> where TEntity : Entity<Tkey>, IAggregateRoot
+    public interface IRepository<TEntity, TKey> where TEntity : Entity, IAggregateRoot
     {
         Task AddAsync(TEntity entity, CancellationToken cancellationToken);
 
@@ -12,11 +12,6 @@ namespace Hephaestus.Repository.Abstraction.Contract
 
         Task DeleteAsync(TEntity entity, CancellationToken cancellationToken);
 
-        Task<TEntity> GetAsync(Tkey id, CancellationToken cancellationToken);
-    }
-
-    public interface IRepository<TEntity> : IRepository<TEntity, long> where TEntity : Entity, IAggregateRoot
-    {
-
+        Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken);
     }
 }

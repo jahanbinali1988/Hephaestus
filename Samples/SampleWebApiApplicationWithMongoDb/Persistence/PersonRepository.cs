@@ -1,18 +1,21 @@
 ﻿using Hephaestus.Repository.MongoDB;
 using SampleWebApiApplicationWithMongoDb.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace SampleWebApiApplicationWithMongoDb.Persistence
 {
-    public class PersonRepository : MongoDbBaseRepository<PersonEntity, long>, IPersonRepository
+    public class PersonRepository : MongoDbBaseRepository<PersonEntity, Guid>, IPersonRepository
     {
         public PersonRepository(SampleMongoDbContext context) : base(context)
         {
         }
 
-        public override Task<long> GetNextId()
+        protected override string CollectionName => "Person";
+
+        public override Task<Guid> GetNextId()
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult<Guid>(Guid.NewGuid());
         }
     }
 }

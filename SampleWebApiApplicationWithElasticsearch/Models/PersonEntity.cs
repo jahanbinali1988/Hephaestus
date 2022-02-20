@@ -9,14 +9,11 @@ namespace SampleWebApiApplicationWithElasticsearch.Models
     {
         public PersonEntity(string firstName, string lastName)
         {
-            Random random = new Random();
-
-            base.Id = random.Next();
-            base.UniqId = Guid.NewGuid();
+            base.Id = Guid.NewGuid();
             UpdateFirstName(firstName);
             UpdateLastName(lastName);
 
-            AddDomainEvent(new CreatePersonDomainEvent(base.UniqId));
+            AddDomainEvent(new CreatePersonDomainEvent(base.Id));
         }
 
         public string FirstName { get; private set; }
@@ -28,6 +25,12 @@ namespace SampleWebApiApplicationWithElasticsearch.Models
         public static PersonEntity Create(string firstName, string lastName)
         {
             return new PersonEntity(firstName, lastName);
+        }
+
+        public void Update(string firstName, string lastName)
+        {
+            this.FirstName = firstName;
+            this.LastName = lastName;
         }
     }
 }

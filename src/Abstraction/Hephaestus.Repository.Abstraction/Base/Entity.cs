@@ -11,7 +11,7 @@ namespace Hephaestus.Repository.Abstraction.Base
     /// Base class for entities.
     /// </summary>
     [Serializable]
-    public abstract class Entity<TKey>
+    public abstract class Entity
     {
         private List<IDomainEvent> _domainEvents;
 
@@ -51,13 +51,7 @@ namespace Hephaestus.Repository.Abstraction.Base
             ModifiedAt = SystemClock.Now;
         }
 
-        public Guid UniqId { get; protected set; }
-
-
-
-
-        public TKey Id { get; protected set; }
-
+        public Guid Id { get; protected set; }
 
         /// <summary>
         /// Row version
@@ -69,13 +63,7 @@ namespace Hephaestus.Repository.Abstraction.Base
         /// </summary>
         public DateTimeOffset? ModifiedAt { get; protected set; }
 
-
         public DateTimeOffset CreatedAt { get; protected set; }
-
-    }
-
-    public abstract class Entity : Entity<long>
-    {
 
     }
 }

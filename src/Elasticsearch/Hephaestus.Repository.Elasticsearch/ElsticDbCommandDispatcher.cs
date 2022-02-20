@@ -6,7 +6,7 @@ namespace Hephaestus.Repository.Elasticsearch
 {
 	internal class ElsticDbCommandDispatcher
 	{
-        public async Task DispatchAsync(EntityContextInfo entityContext, CancellationToken cancellationToken)
+        public async Task DispatchAsync(EntityContextInfo<Entity> entityContext, CancellationToken cancellationToken)
         {
             await entityContext.CommandProvider.ExecuteAsync(entityContext, cancellationToken);
         }
