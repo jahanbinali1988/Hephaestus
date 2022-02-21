@@ -34,5 +34,42 @@ namespace SampleWebApiApplicationWithMongoDb.Controllers
 
             return Created($"/Person/{person.Id}", person);
         }
+
+        [HttpPut]
+        public async Task<ActionResult> Update([FromQuery] Guid id, [FromBody] CreatePersonRequest request)
+        {
+            var person = await _personRepository.GetAsync(id, CancellationToken.None);
+            person.Update(request.FirstName, request.LastName);
+            await _personRepository.UpdateAsync(person, CancellationToken.None);
+            await _unitOfWork.CommitAsync();
+
+            return Created($"/Person/{person.Id}", person);
+        }
+
+        [HttpDelete("/id")]
+        public async Task<ActionResult> Delete([FromQuery] Guid id)
+        {
+            var person = await _personRepository.GetAsync(id, CancellationToken.None);
+            await _personRepository.DeleteAsync(person, CancellationToken.None);
+            await _unitOfWork.CommitAsync();
+
+            return Created($"/Person/{person.Id}", person);
+        }
+
+        [HttpGet("/id")]
+        public async Task<PersonEntity> Get([FromQuery] Guid id)
+        {
+            var person = await _personRepository.GetAsync(id, CancellationToken.None);
+
+            return person;
+        }
+
+        [HttpGet()]
+        public async Task<IEnumerable<PersonEntity>> GetList()
+        {
+            var persons = await _personRepository.GetAll(CancellationToken.None);
+
+            return persons;
+        }
     }
 }

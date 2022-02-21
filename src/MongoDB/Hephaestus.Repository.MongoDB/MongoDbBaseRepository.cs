@@ -44,7 +44,7 @@ namespace Hephaestus.Repository.MongoDB
             return await data.SingleOrDefaultAsync(cancellationToken);
         }
 
-        public virtual async Task<IEnumerable<T>> GetAll(CancellationToken cancellationToken)
+        public async Task<IEnumerable<T>> GetAll(CancellationToken cancellationToken)
         {
             var all = await DbSet.FindAsync(Builders<T>.Filter.Empty);
             return await all.ToListAsync(cancellationToken);

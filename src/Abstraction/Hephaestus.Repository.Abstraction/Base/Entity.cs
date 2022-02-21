@@ -46,17 +46,12 @@ namespace Hephaestus.Repository.Abstraction.Base
             }
         }
 
-        internal void MarkAsUpdated()
+        protected void MarkAsUpdated()
         {
             ModifiedAt = SystemClock.Now;
         }
 
         public Guid Id { get; protected set; }
-
-        /// <summary>
-        /// Row version
-        /// </summary>
-        public byte[] Version { get; protected set; }
 
         /// <summary>
         /// Modification date and time of this entity

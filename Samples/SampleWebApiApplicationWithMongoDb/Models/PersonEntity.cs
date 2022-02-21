@@ -10,6 +10,7 @@ namespace SampleWebApiApplicationWithMongoDb.Models
         public PersonEntity(string firstName, string lastName)
         {
             base.Id = Guid.NewGuid();
+            base.CreatedAt = DateTimeOffset.Now;
             UpdateFirstName(firstName);
             UpdateLastName(lastName);
 
@@ -25,6 +26,13 @@ namespace SampleWebApiApplicationWithMongoDb.Models
         public static PersonEntity Create(string firstName, string lastName)
         {
             return new PersonEntity(firstName, lastName);
+        }
+
+        public void Update(string firstName, string lastName)
+        {
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            base.MarkAsUpdated();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace SampleWebApiApplicationWithMongoDb.Persistence
         {
         }
 
-        protected override string CollectionName => "Person";
+        protected override string CollectionName => nameof(PersonEntity);
 
         public override Task<Guid> GetNextId()
         {
