@@ -9,6 +9,5 @@ namespace SampleWebApiApplicationWithMongoDb.Persistence
 {
     public interface IPersonRepository : IRepository<PersonEntity, Guid>
     {
-        Task<IEnumerable<PersonEntity>> GetAll(CancellationToken cancellationToken);
     }
 }

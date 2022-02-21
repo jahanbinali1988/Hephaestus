@@ -67,7 +67,7 @@ namespace SampleWebApiApplicationWithMongoDb.Controllers
         [HttpGet()]
         public async Task<IEnumerable<PersonEntity>> GetList()
         {
-            var persons = await _personRepository.GetAll(CancellationToken.None);
+            var persons = await _personRepository.GetListAsync(CancellationToken.None);
 
             return persons;
         }

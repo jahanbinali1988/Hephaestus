@@ -6,6 +6,7 @@
 		<PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Update="MongoDB.Driver" Version="2.14.1" />
 		<PackageReference Update="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Update="Mapster" Version="7.2.0" />
 		<PackageReference Update="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
 		
 		<PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.2" />

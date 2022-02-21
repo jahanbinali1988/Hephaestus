@@ -1,4 +1,5 @@
 ﻿using Hephaestus.Repository.Abstraction.Base;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,5 +14,7 @@ namespace Hephaestus.Repository.Abstraction.Contract
         Task DeleteAsync(TEntity entity, CancellationToken cancellationToken);
 
         Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken);
+
+        Task<IEnumerable<TEntity>> GetListAsync(CancellationToken cancellationToken);
     }
 }

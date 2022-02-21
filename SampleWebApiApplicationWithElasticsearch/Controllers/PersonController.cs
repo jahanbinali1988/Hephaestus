@@ -1,11 +1,14 @@
 ﻿using Hephaestus.Repository.Abstraction.Contract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SampleWebApiApplicationWithElasticsearch.Models;
+using SampleWebApiApplicationWithElasticsearch.ViewModels;
 using SampleWebApiApplicationWithElasticsearch.Persistence;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SampleWebApiApplicationWithElasticsearch.Models;
+using Mapster;
 
 namespace SampleWebApiApplicationWithElasticsearch.Controllers
 {
@@ -24,43 +27,50 @@ namespace SampleWebApiApplicationWithElasticsearch.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreatePersonRequest request)
+        public async Task<ActionResult<PersonViewModel>> Create([FromBody] CreatePersonRequest request)
         {
             var person = PersonEntity.Create(request.FirstName, request.LastName);
             await _personRepository.AddAsync(person, CancellationToken.None);
             await _unitOfWork.CommitAsync();
 
-            return Created($"/Person/{person.Id}", person);
+            return Created($"/Person/{person.Id}", person.Adapt<PersonViewModel>());
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update([FromQuery] Guid id, [FromBody] CreatePersonRequest request)
+        public async Task<ActionResult<PersonViewModel>> Update([FromQuery] Guid id, [FromBody] CreatePersonRequest request)
         {
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
             person.Update(request.FirstName, request.LastName);
             await _personRepository.UpdateAsync(person, CancellationToken.None);
             await _unitOfWork.CommitAsync();
 
-            return Created($"/Person/{person.Id}", person);
+            return person.Adapt<PersonViewModel>();
         }
 
-        [HttpDelete("/id")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromQuery] Guid id)
         {
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
             await _personRepository.DeleteAsync(person, CancellationToken.None);
             await _unitOfWork.CommitAsync();
 
-            return Created($"/Person/{person.Id}", person);
+            return NoContent();
         }
 
-        [HttpGet("/id")]
-        public async Task<ActionResult> Get([FromQuery] Guid id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PersonViewModel>> Get([FromQuery] Guid id)
         {
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
-            await _unitOfWork.CommitAsync();
 
-            return Created($"/Person/{person.Id}", person);
+            return person.Adapt<PersonViewModel>();
+        }
+
+        [HttpGet()]
+        public async Task<IEnumerable<PersonViewModel>> GetList()
+        {
+            var persons = await _personRepository.GetListAsync(CancellationToken.None);
+
+            return persons.Adapt<IEnumerable<PersonViewModel>>();
         }
     }
 }

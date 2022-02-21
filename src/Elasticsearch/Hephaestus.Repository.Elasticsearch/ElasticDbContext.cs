@@ -41,6 +41,7 @@ namespace Hephaestus.Repository.Elasticsearch
                 SniffedOnStartup = true,
             };
             _connectionSettings = new ConnectionSettings(pool);
+            _connectionSettings.DefaultMappingFor<Entity>(c => c.Ignore(i => i.DomainEvents));
             _elasticClient = new ElasticClient(_connectionSettings);
 
             OnModelCreating();
@@ -48,7 +49,6 @@ namespace Hephaestus.Repository.Elasticsearch
 
         protected virtual void OnModelCreating()
         {
-
         }
 
         #region Commands
@@ -138,6 +138,13 @@ namespace Hephaestus.Repository.Elasticsearch
             }
 
             return list;
+        }
+
+        public IElasticClient GetClient()
+        {
+            Configure();
+
+            return _elasticClient;
         }
 
         public void Dispose()

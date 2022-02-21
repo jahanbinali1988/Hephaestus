@@ -7,8 +7,8 @@ namespace SampleWebApiApplicationWithElasticsearch.Persistence.MappingConfigurat
     public class PersonMappingConfiguration : IElasticMappingConfiguration<PersonEntity>
     {
         public string IdPropertyName => nameof(PersonEntity.Id);
-        public byte NumberOfShards => 2;
-        public byte NumberOfReplicas => 3;
+        public byte NumberOfShards => 1;
+        public byte NumberOfReplicas => 1;
         public string IndexName => "neptune-people-data";
 
         public PropertiesDescriptor<PersonEntity> MapPropertiesDescriptor(PropertiesDescriptor<PersonEntity> descriptor)

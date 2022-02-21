@@ -1,4 +1,4 @@
-﻿namespace SampleWebApiApplicationWithElasticsearch.Models
+﻿namespace SampleWebApiApplicationWithElasticsearch.ViewModels
 {
     public class CreatePersonRequest
     {

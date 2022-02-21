@@ -17,7 +17,7 @@ namespace Hephaestus.Repository.Elasticsearch.Provider
 
         public async Task ExecuteAsync(EntityContextInfo<T> entity, CancellationToken token)
         {
-            var upsertResponse = await elasticClient.IndexAsync(entity.Document, u => u.Index(entity.EntityType), token).ConfigureAwait(true);
+            var upsertResponse = await elasticClient.IndexAsync<T>(entity.Document, u => u.Index(entity.EntityType), token).ConfigureAwait(true);
             upsertResponse.EnsureRequestSuccess();
         }
     }
