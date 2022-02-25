@@ -4,6 +4,7 @@ using Hephaestus.Repository.Elasticsearch.Extensions;
 using Nest;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,20 +32,27 @@ namespace Hephaestus.Repository.Elasticsearch
 
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            await dbContext.AddDocument<T>(entity);
+            await dbContext.UpdateDocument<T>(entity);
         }
 
         public async Task<T> GetAsync(TKey id, CancellationToken cancellationToken)
         {
-            var response = await _elasticClient.GetAsync<T>(new GetRequest<T>(new Id(id)), cancellationToken);
+            var response = await _elasticClient.SearchAsync<T>(p => p
+                        .Size(1)
+                        .Query(q => q
+                            .Bool(b => b.
+                                Must(m => m.
+                                    Term(t => t.
+                                        Field(f => f.Id).
+                                        Value(id))
+                        ))));
             response.EnsureRequestSuccess();
-
-            return response.Source;
+            return response.Documents.FirstOrDefault();
         }
 
         public async Task<IEnumerable<T>> GetListAsync(CancellationToken cancellationToken)
         {
-            var response = await _elasticClient.SearchAsync<T>(c=> c
+            var response = await _elasticClient.SearchAsync<T>(c => c
                 .Source(x => x.IncludeAll())
                 .Skip(0)
                 .Take(10), cancellationToken);

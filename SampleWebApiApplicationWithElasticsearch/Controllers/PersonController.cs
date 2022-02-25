@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using SampleWebApiApplicationWithElasticsearch.Models;
 using Mapster;
+using Nest;
+using Hephaestus.Repository.Abstraction.Exceptions;
 
 namespace SampleWebApiApplicationWithElasticsearch.Controllers
 {
@@ -40,6 +42,9 @@ namespace SampleWebApiApplicationWithElasticsearch.Controllers
         public async Task<ActionResult<PersonViewModel>> Update([FromQuery] Guid id, [FromBody] CreatePersonRequest request)
         {
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
+            if (person == null)
+                throw new EntityNotFoundException($"Unable to find Person with ID '{id}'");
+
             person.Update(request.FirstName, request.LastName);
             await _personRepository.UpdateAsync(person, CancellationToken.None);
             await _unitOfWork.CommitAsync();
@@ -48,9 +53,13 @@ namespace SampleWebApiApplicationWithElasticsearch.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromQuery] Guid id)
+        public async Task<ActionResult> Delete(Guid id)
         {
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
+            if (person == null)
+                throw new EntityNotFoundException($"Unable to find Person with ID '{id}'");
+
+            person.Delete();
             await _personRepository.DeleteAsync(person, CancellationToken.None);
             await _unitOfWork.CommitAsync();
 
@@ -58,7 +67,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PersonViewModel>> Get([FromQuery] Guid id)
+        public async Task<ActionResult<PersonViewModel>> Get(Guid id)
         {
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
 

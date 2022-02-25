@@ -7,8 +7,9 @@
 	<ItemGroup>
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 		<PackageReference Include="MediatR" />
-    <PackageReference Include="Mapster" />
+		<PackageReference Include="Mapster" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
 	</ItemGroup>
 
 	<ItemGroup>

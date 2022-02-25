@@ -6,6 +6,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="NEST" />
+		<PackageReference Include="Polly" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />

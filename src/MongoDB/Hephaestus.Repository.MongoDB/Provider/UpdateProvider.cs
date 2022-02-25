@@ -20,7 +20,7 @@ namespace Hephaestus.Repository.MongoDB.Provider
 
             var filter = builder.Eq(e => e.Id, contextInfo.Document.Id);
 
-            await _collection.ReplaceOneAsync(filter, contextInfo.Document, cancellationToken: token);
+            await _collection.ReplaceOneAsync(filter, (T)contextInfo.Document, cancellationToken: token);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Hephaestus.Repository.Abstraction.Base
 {
     public class EntityContextInfo<T> where T : Entity
 	{
-		public T Document { get; set; }
+		public Entity Document { get; set; }
 		public CommandType CommandType { get; set; }
         public Type EntityType { get; set; }
 		public ICommandProvider<T> CommandProvider { get; set; }

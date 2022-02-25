@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Hephaestus.Repository.Elasticsearch.Extensions;
 using SampleWebApiApplicationWithElasticsearch.Models;
 using SampleWebApiApplicationWithElasticsearch.Persistence.MappingConfiguration;
+using Microsoft.Extensions.Logging;
 
 namespace SampleWebApiApplicationWithElasticsearch.Persistence
 {

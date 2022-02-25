@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using SampleWebApiApplicationWithElasticsearch.Extensions;
 
 namespace SampleWebApiApplicationWithElasticsearch
@@ -21,8 +24,28 @@ namespace SampleWebApiApplicationWithElasticsearch
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDependencies(Configuration);
-            
-            services.AddControllers();
+            services.AddMvcCore()
+                .AddApiExplorer()
+                .AddDataAnnotations()
+                .AddNewtonsoftJson(
+                    options =>
+                    {
+                        options.SerializerSettings.DateFormatString = "s";
+                        options.SerializerSettings.ContractResolver = new DefaultContractResolver
+                        {
+                            NamingStrategy = new CamelCaseNamingStrategy()
+                            {
+                                ProcessDictionaryKeys = true
+                            },
+                        };
+                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                        options.SerializerSettings.Converters.Add(new StringEnumConverter()
+                        {
+                            NamingStrategy = new CamelCaseNamingStrategy(),
+                            AllowIntegerValues = false
+                        });
+                    });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleWebApiApplicationWithElasticsearch", Version = "v1" });
@@ -42,8 +65,6 @@ namespace SampleWebApiApplicationWithElasticsearch
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

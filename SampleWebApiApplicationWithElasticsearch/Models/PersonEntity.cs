@@ -7,9 +7,10 @@ namespace SampleWebApiApplicationWithElasticsearch.Models
 {
     public class PersonEntity : Entity, IAggregateRoot
     {
-        public PersonEntity(string firstName, string lastName)
+        public PersonEntity(Guid id, string firstName, string lastName)
         {
-            base.Id = Guid.NewGuid();
+            base.Id = id;
+            base.CreatedAt = DateTimeOffset.Now;
             UpdateFirstName(firstName);
             UpdateLastName(lastName);
 
@@ -24,13 +25,20 @@ namespace SampleWebApiApplicationWithElasticsearch.Models
 
         public static PersonEntity Create(string firstName, string lastName)
         {
-            return new PersonEntity(firstName, lastName);
+            var id = Guid.NewGuid();
+            return new PersonEntity(id, firstName, lastName);
         }
 
         public void Update(string firstName, string lastName)
         {
             this.FirstName = firstName;
             this.LastName = lastName;
+            base.MarkAsUpdated();
+        }
+
+        public void Delete()
+        {
+            MarkAsDeleted();
         }
     }
 }

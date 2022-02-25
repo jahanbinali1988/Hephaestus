@@ -1,6 +1,9 @@
 ﻿using Hephaestus.Repository.Elasticsearch;
+using Nest;
 using SampleWebApiApplicationWithElasticsearch.Models;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SampleWebApiApplicationWithElasticsearch.Persistence
 {
@@ -9,5 +12,6 @@ namespace SampleWebApiApplicationWithElasticsearch.Persistence
         public PersonRepository(SampleElasticDbContext dbContext) : base(dbContext)
         {
         }
+
     }
 }

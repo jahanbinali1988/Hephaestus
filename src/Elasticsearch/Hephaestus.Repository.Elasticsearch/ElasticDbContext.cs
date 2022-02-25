@@ -11,6 +11,7 @@ using Hephaestus.Repository.Elasticsearch.Configure;
 using Microsoft.Extensions.Options;
 using Hephaestus.Repository.Elasticsearch.Provider;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Hephaestus.Repository.Elasticsearch
 {
@@ -38,7 +39,7 @@ namespace Hephaestus.Repository.Elasticsearch
             var uris = _config.ConnectionString.Split(';').Select(x => new Uri(x));
             var pool = new StaticConnectionPool(uris, randomize: false)
             {
-                SniffedOnStartup = true,
+                SniffedOnStartup = true
             };
             _connectionSettings = new ConnectionSettings(pool);
             _connectionSettings.DefaultMappingFor<Entity>(c => c.Ignore(i => i.DomainEvents));
@@ -65,7 +66,7 @@ namespace Hephaestus.Repository.Elasticsearch
                 EntityType = model.GetType(),
                 Document = model,
                 CommandType = CommandType.Add,
-                CommandProvider = new InsertProvider<Entity>(_elasticClient)
+                CommandProvider = new InsertProvider<Entity>(_config)
             };
             _entityPendingChanges.Enqueue(data);
 
@@ -85,7 +86,7 @@ namespace Hephaestus.Repository.Elasticsearch
                 EntityType = model.GetType(),
                 Document = model,
                 CommandType = CommandType.Update,
-                CommandProvider = new UpdateProvider<Entity>(_elasticClient)
+                CommandProvider = new UpdateProvider<Entity>(_config)
             };
             _entityPendingChanges.Enqueue(data);
 
@@ -105,7 +106,7 @@ namespace Hephaestus.Repository.Elasticsearch
                 EntityType = typeof(T),
                 Document = model,
                 CommandType = CommandType.Delete,
-                CommandProvider = new DeleteProvider<Entity>(_elasticClient)
+                CommandProvider = new DeleteProvider<Entity>(_config)
             };
             _entityPendingChanges.Enqueue(data);
 

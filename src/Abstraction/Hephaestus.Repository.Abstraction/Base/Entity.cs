@@ -36,11 +36,19 @@ namespace Hephaestus.Repository.Abstraction.Base
             ModifiedAt = SystemClock.Now;
         }
 
+        protected void MarkAsDeleted()
+        {
+            ModifiedAt = SystemClock.Now;
+            IsDeleted = true;
+        }
+
         public Guid Id { get; protected set; }
 
         public DateTimeOffset? ModifiedAt { get; protected set; }
 
         public DateTimeOffset CreatedAt { get; protected set; }
+
+        public bool IsDeleted { get; internal set; }
 
     }
 }

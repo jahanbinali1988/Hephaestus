@@ -9,7 +9,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Persistence.MappingConfigurat
         public string IdPropertyName => nameof(PersonEntity.Id);
         public byte NumberOfShards => 1;
         public byte NumberOfReplicas => 1;
-        public string IndexName => "neptune-people-data";
+        public string IndexName => nameof(PersonEntity).ToLower();
 
         public PropertiesDescriptor<PersonEntity> MapPropertiesDescriptor(PropertiesDescriptor<PersonEntity> descriptor)
         {
@@ -18,6 +18,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Persistence.MappingConfigurat
                     .Keyword(x => x.Name(n => n.LastName))
                     .Date(x => x.Name(n => n.CreatedAt))
                     .Date(x => x.Name(n => n.ModifiedAt))
+                    .Boolean(x => x.Name(n => n.IsDeleted))
                     .Keyword(x => x.Name(n => n.Id).Index(true).Norms(false));
         }
     }

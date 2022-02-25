@@ -16,7 +16,7 @@ namespace Hephaestus.Repository.MongoDB.Provider
 
         public async Task ExecuteAsync(EntityContextInfo<T> contextInfo, CancellationToken token)
         {
-            await _collection.InsertOneAsync(contextInfo.Document, new InsertOneOptions() { BypassDocumentValidation = true }, token);
+            await _collection.InsertOneAsync((T)contextInfo.Document, new InsertOneOptions() { BypassDocumentValidation = true }, token);
         }
     }
 }
