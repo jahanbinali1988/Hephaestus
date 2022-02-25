@@ -16,7 +16,11 @@ namespace Hephaestus.Repository.MongoDB.Provider
 
         public async Task ExecuteAsync(EntityContextInfo<T> contextInfo, CancellationToken token)
         {
-            await _collection.DeleteOneAsync<T>(c=> c.Id == contextInfo.Document.Id);
+            var builder = Builders<T>.Filter;
+
+            var filter = builder.Eq(e => e.Id, contextInfo.Document.Id);
+
+            await _collection.ReplaceOneAsync(filter, (T)contextInfo.Document, cancellationToken: token);
         }
     }
 }

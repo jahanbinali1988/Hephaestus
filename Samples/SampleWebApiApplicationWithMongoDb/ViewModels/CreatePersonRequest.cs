@@ -1,4 +1,4 @@
-﻿namespace SampleWebApiApplicationWithMongoDb.Models
+﻿namespace SampleWebApiApplicationWithMongoDb.ViewModels
 {
     public class CreatePersonRequest
     {

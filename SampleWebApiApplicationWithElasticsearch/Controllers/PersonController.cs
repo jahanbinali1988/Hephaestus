@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using SampleWebApiApplicationWithElasticsearch.Models;
 using Mapster;
-using Nest;
 using Hephaestus.Repository.Abstraction.Exceptions;
 
 namespace SampleWebApiApplicationWithElasticsearch.Controllers

@@ -34,5 +34,10 @@ namespace SampleWebApiApplicationWithMongoDb.Models
             this.LastName = lastName;
             base.MarkAsUpdated();
         }
+
+        public void Delete()
+        {
+            base.MarkAsDeleted();
+        }
     }
 }
