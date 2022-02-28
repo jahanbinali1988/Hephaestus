@@ -31,7 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hphaestus.Elasticsearch.tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebApiApplicationWithElasticsearch", "SampleWebApiApplicationWithElasticsearch\SampleWebApiApplicationWithElasticsearch.csproj", "{92215AE8-9F35-4E0F-A31F-49E481799E41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebApiApplicationWithMongoDb", "Samples\SampleWebApiApplicationWithMongoDb\SampleWebApiApplicationWithMongoDb.csproj", "{C64A24DE-14D0-4EFB-8A1D-A19741B8B0B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebApiApplicationWithMongoDb", "Samples\SampleWebApiApplicationWithMongoDb\SampleWebApiApplicationWithMongoDb.csproj", "{C64A24DE-14D0-4EFB-8A1D-A19741B8B0B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{7A46804D-B87D-45CE-A9CF-E5580C702637}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hephaestus.Cache", "src\Cache\Hephaestus.Cache\Hephaestus.Cache.csproj", "{36E92E17-A3CF-4550-8BCC-D6C29CF5F929}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,10 @@ Global
 		{C64A24DE-14D0-4EFB-8A1D-A19741B8B0B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C64A24DE-14D0-4EFB-8A1D-A19741B8B0B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C64A24DE-14D0-4EFB-8A1D-A19741B8B0B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36E92E17-A3CF-4550-8BCC-D6C29CF5F929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36E92E17-A3CF-4550-8BCC-D6C29CF5F929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36E92E17-A3CF-4550-8BCC-D6C29CF5F929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36E92E17-A3CF-4550-8BCC-D6C29CF5F929}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +85,8 @@ Global
 		{5CC299CC-8B45-47F5-B54E-CA45FFDE7F8C} = {EC28B66D-CC8B-42DD-A802-6C9311BAAF86}
 		{92215AE8-9F35-4E0F-A31F-49E481799E41} = {F2D93383-EDE5-4F06-80D6-CF77A33F3CCB}
 		{C64A24DE-14D0-4EFB-8A1D-A19741B8B0B3} = {F2D93383-EDE5-4F06-80D6-CF77A33F3CCB}
+		{7A46804D-B87D-45CE-A9CF-E5580C702637} = {8909F92D-1A58-4A58-A47E-1E46F84CDD44}
+		{36E92E17-A3CF-4550-8BCC-D6C29CF5F929} = {7A46804D-B87D-45CE-A9CF-E5580C702637}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {62704F41-ADE7-4AC7-8ABF-ACFB282FB6F3}

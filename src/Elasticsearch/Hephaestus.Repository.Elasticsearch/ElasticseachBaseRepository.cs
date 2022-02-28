@@ -22,17 +22,17 @@ namespace Hephaestus.Repository.Elasticsearch
 
         public async Task AddAsync(T entity, CancellationToken cancellationToken)
         {
-            await dbContext.AddDocument<T>(entity);
+            await dbContext.AddDocumentAsync<T>(entity);
         }
 
         public async Task DeleteAsync(T entity, CancellationToken cancellationToken)
         {
-            await dbContext.DeleteDocument<T>(entity);
+            await dbContext.DeleteDocumentAsync<T>(entity);
         }
 
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            await dbContext.UpdateDocument<T>(entity);
+            await dbContext.UpdateDocumentAsync<T>(entity);
         }
 
         public async Task<T> GetAsync(TKey id, CancellationToken cancellationToken)

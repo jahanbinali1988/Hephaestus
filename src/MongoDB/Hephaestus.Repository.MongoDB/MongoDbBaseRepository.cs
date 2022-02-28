@@ -19,23 +19,19 @@ namespace Hephaestus.Repository.MongoDB
         }
         public abstract Task<TKey> GetNextId();
 
-        public Task AddAsync(T aggregate, CancellationToken cancellationToken)
+        public async Task AddAsync(T aggregate, CancellationToken cancellationToken)
         {
-            Context.AddDocument<T>(aggregate);
-
-            return Task.CompletedTask;
+            await Context.AddDocumentAsync<T>(aggregate);
         }
 
-        public Task UpdateAsync(T aggregate, CancellationToken cancellationToken)
+        public async Task UpdateAsync(T aggregate, CancellationToken cancellationToken)
         {
-            Context.UpdateDocument<T>(aggregate);
-            return Task.CompletedTask;
+            await Context.UpdateDocumentAsync<T>(aggregate);
         }
 
-        public Task DeleteAsync(T aggregate, CancellationToken cancellationToken)
+        public async Task DeleteAsync(T aggregate, CancellationToken cancellationToken)
         {
-            Context.DeleteDocument<T>(aggregate);
-            return Task.CompletedTask;
+            await Context.DeleteDocumentAsync<T>(aggregate);
         }
 
         public async Task<T> GetAsync(TKey key, CancellationToken cancellationToken)

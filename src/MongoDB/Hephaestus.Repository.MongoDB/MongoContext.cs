@@ -20,6 +20,7 @@ namespace Hephaestus.Repository.MongoDB
         private ConcurrentQueue<IDomainEvent> _domainEvents;
         private readonly MongoDbCommandDispatcher _commandDispatcher;
         private readonly MongoDbConfig _config;
+        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
         public MongoContext(IOptions<MongoDbConfig> option)
         {
             _config = new MongoDbConfig(option.Value.ConnectionString, option.Value.DatabaseName);
@@ -43,8 +44,10 @@ namespace Hephaestus.Repository.MongoDB
         }
 
         #region Commands
-        public void AddDocument<T>(T model) where T : Entity
+        public async Task AddDocumentAsync<T>(T model) where T : Entity
         {
+            await semaphoreSlim.WaitAsync();
+
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
                 {
@@ -59,10 +62,14 @@ namespace Hephaestus.Repository.MongoDB
                 CommandProvider = new InsertProvider<Entity>(Database.GetCollection<Entity>(model.GetType().Name))
             };
             _entityPendingChanges.Enqueue(contextInfo);
+
+            semaphoreSlim.Release();
         }
 
-        public void UpdateDocument<T>(T model) where T : Entity
+        public async Task UpdateDocumentAsync<T>(T model) where T : Entity
         {
+            await semaphoreSlim.WaitAsync();
+
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
                 {
@@ -77,10 +84,14 @@ namespace Hephaestus.Repository.MongoDB
                 CommandProvider = new UpdateProvider<Entity>(Database.GetCollection<Entity>(model.GetType().Name))
             };
             _entityPendingChanges.Enqueue(contextInfo);
+
+            semaphoreSlim.Release();
         }
 
-        public void DeleteDocument<T>(T model) where T : Entity
+        public async Task DeleteDocumentAsync<T>(T model) where T : Entity
         {
+            await semaphoreSlim.WaitAsync();
+
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
                 {
@@ -95,12 +106,16 @@ namespace Hephaestus.Repository.MongoDB
                 CommandProvider = new DeleteProvider<Entity>(Database.GetCollection<Entity>(model.GetType().Name))
             };
             _entityPendingChanges.Enqueue(contextInfo);
+
+            semaphoreSlim.Release();
         }
         #endregion
 
         #region SaveChanges
         public async Task SaveChangesAsync(CancellationToken token = default)
         {
+            await semaphoreSlim.WaitAsync();
+
             Configure();
 
             if (_entityPendingChanges.Count == 0)
@@ -110,6 +125,8 @@ namespace Hephaestus.Repository.MongoDB
             {
                 await _commandDispatcher.DispatchAsync(contextInfo, token);
             }
+
+            semaphoreSlim.Release();
         }
         #endregion
 

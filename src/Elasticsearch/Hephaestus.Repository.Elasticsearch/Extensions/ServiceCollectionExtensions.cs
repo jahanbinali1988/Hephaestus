@@ -12,29 +12,35 @@ namespace Hephaestus.Repository.Elasticsearch.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-//        public static IServiceCollection AddElasticSearchClient(this IServiceCollection services, ElasticsearchConfig config)
-//        {
-//            services.AddSingleton<IElasticClient>(provider =>
-//            {
-//                var uris = config.ConnectionString
-//                    .Split(';').Select(x => new Uri(x));
+        //        public static IServiceCollection AddElasticSearchClient(this IServiceCollection services, ElasticsearchConfig config)
+        //        {
+        //    services.AddHttpClient("SomeCustomAPI", client =>
+        //{
+        //    client.BaseAddress = new Uri("https://someapiurl/");
+        //    client.DefaultRequestHeaders.Add("Accept", "application/json");
+        //    client.DefaultRequestHeaders.Add("User-Agent", "MyCustomUserAgent");
+        //});
+        //            services.AddSingleton<IElasticClient>(provider =>
+        //            {
+        //                var uris = config.ConnectionString
+        //                    .Split(';').Select(x => new Uri(x));
 
-//                var pool = new StaticConnectionPool(uris, randomize: false)
-//                {
-//                    SniffedOnStartup = true,
-//                };
+        //                var pool = new StaticConnectionPool(uris, randomize: false)
+        //                {
+        //                    SniffedOnStartup = true,
+        //                };
 
-//                var connection = new ConnectionSettings(pool);
-//#if DEBUG
-//                connection.EnableDebugMode();
-//#endif
-//                var client = new ElasticClient(connection);
-                
-//                return client;
-//            });
+        //                var connection = new ConnectionSettings(pool);
+        //#if DEBUG
+        //                connection.EnableDebugMode();
+        //#endif
+        //                var client = new ElasticClient(connection);
 
-//            return services;
-//        }
+        //                return client;
+        //            });
+
+        //            return services;
+        //        }
 
         public static IElasticClient ApplyMappingConfiguration<T>(this IElasticClient client, ConnectionSettings connection,
             IElasticMappingConfiguration<T> configuration) where T : Entity

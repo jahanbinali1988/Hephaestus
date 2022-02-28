@@ -23,6 +23,7 @@ namespace Hephaestus.Repository.Elasticsearch
         private ConcurrentQueue<IDomainEvent> _domainEvents;
         private readonly ElsticDbCommandDispatcher _commandDispatcher;
         private readonly ElasticsearchConfig _config;
+        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
         public ElasticDbContext(IOptions<ElasticsearchConfig> option)
         {
             _config = new ElasticsearchConfig(option.Value.ConnectionString);
@@ -53,8 +54,9 @@ namespace Hephaestus.Repository.Elasticsearch
         }
 
         #region Commands
-        public async Task AddDocument<T>(T model) where T : Entity
+        public async Task AddDocumentAsync<T>(T model) where T : Entity
         {
+            await semaphoreSlim.WaitAsync();
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
                 {
@@ -70,11 +72,12 @@ namespace Hephaestus.Repository.Elasticsearch
             };
             _entityPendingChanges.Enqueue(data);
 
-            await Task.CompletedTask;
+            semaphoreSlim.Release();
         }
 
-        public async Task UpdateDocument<T>(T model) where T : Entity
+        public async Task UpdateDocumentAsync<T>(T model) where T : Entity
         {
+            await semaphoreSlim.WaitAsync();
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
                 {
@@ -90,11 +93,12 @@ namespace Hephaestus.Repository.Elasticsearch
             };
             _entityPendingChanges.Enqueue(data);
 
-            await Task.CompletedTask;
+            semaphoreSlim.Release();
         }
 
-        public async Task DeleteDocument<T>(T model) where T : Entity
+        public async Task DeleteDocumentAsync<T>(T model) where T : Entity
         {
+            await semaphoreSlim.WaitAsync();
             if (model.DomainEvents != null && model.DomainEvents.Count != 0)
                 foreach (var domainEvent in model.DomainEvents)
                 {
@@ -110,7 +114,7 @@ namespace Hephaestus.Repository.Elasticsearch
             };
             _entityPendingChanges.Enqueue(data);
 
-            await Task.CompletedTask;
+            semaphoreSlim.Release();
         }
 
         #endregion
@@ -118,6 +122,8 @@ namespace Hephaestus.Repository.Elasticsearch
         #region SaveChanges
         public async Task SaveChangesAsync(CancellationToken token = default)
         {
+            await semaphoreSlim.WaitAsync();
+
             Configure();
 
             if (_entityPendingChanges.Count == 0)
@@ -127,6 +133,8 @@ namespace Hephaestus.Repository.Elasticsearch
             {
                 await _commandDispatcher.DispatchAsync(contextInfo, token);
             }
+
+            semaphoreSlim.Release();
         }
         #endregion
 
