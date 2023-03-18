@@ -2,6 +2,7 @@
 using Hephaestus.Repository.Abstraction.Contract;
 using SampleWebApiApplicationWithMongoDb.Models.DomainEvent;
 using System;
+using System.Collections.Generic;
 
 namespace SampleWebApiApplicationWithMongoDb.Models
 {
@@ -19,6 +20,10 @@ namespace SampleWebApiApplicationWithMongoDb.Models
 
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
+
+
+        private List<OrderEntity> _orders = new ();
+        public IReadOnlyCollection<OrderEntity> Orders => _orders.AsReadOnly();
 
         private void UpdateFirstName(string firstName) { this.FirstName = firstName; }
         private void UpdateLastName(string lastName) { this.LastName = lastName; }
@@ -38,6 +43,12 @@ namespace SampleWebApiApplicationWithMongoDb.Models
         public void Delete()
         {
             base.MarkAsDeleted();
+        }
+
+        public void AddOrder(Guid orderId)
+        {
+            var order = OrderEntity.Create(orderId);
+            _orders.Add(order);
         }
     }
 }

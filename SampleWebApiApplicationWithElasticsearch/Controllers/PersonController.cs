@@ -32,7 +32,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Controllers
         {
             var person = PersonEntity.Create(request.FirstName, request.LastName);
             await _personRepository.AddAsync(person, CancellationToken.None);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Created($"/Person/{person.Id}", person.Adapt<PersonViewModel>());
         }
@@ -46,7 +46,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Controllers
 
             person.Update(request.FirstName, request.LastName);
             await _personRepository.UpdateAsync(person, CancellationToken.None);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return person.Adapt<PersonViewModel>();
         }
@@ -60,7 +60,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Controllers
 
             person.Delete();
             await _personRepository.DeleteAsync(person, CancellationToken.None);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return NoContent();
         }

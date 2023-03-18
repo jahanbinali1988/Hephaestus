@@ -14,6 +14,7 @@ namespace SampleWebApiApplicationWithMongoDb.Persistence
         protected override void OnModelCreating()
         {
             PersonMappingConfiguration.Configure();
+            OrderMappingConfiguration.Configure();
             base.OnModelCreating();
         }
     }

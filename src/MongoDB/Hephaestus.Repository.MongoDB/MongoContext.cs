@@ -21,7 +21,7 @@ namespace Hephaestus.Repository.MongoDB
         private readonly MongoDbCommandDispatcher _commandDispatcher;
         private readonly MongoDbConfig _config;
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
-        public MongoContext(IOptions<MongoDbConfig> option)
+        protected MongoContext(IOptions<MongoDbConfig> option)
         {
             _config = new MongoDbConfig(option.Value.ConnectionString, option.Value.DatabaseName);
             _entityPendingChanges = new ConcurrentQueue<EntityContextInfo<Entity>>();
@@ -112,6 +112,10 @@ namespace Hephaestus.Repository.MongoDB
         #endregion
 
         #region SaveChanges
+        public Task<IClientSessionHandle> StartSessionAsync(CancellationToken token = default)
+        {
+            return MongoClient.StartSessionAsync();
+        }
         public async Task SaveChangesAsync(CancellationToken token = default)
         {
             await semaphoreSlim.WaitAsync();
@@ -127,6 +131,10 @@ namespace Hephaestus.Repository.MongoDB
             }
 
             semaphoreSlim.Release();
+        }
+        public void ClearChanges()
+        {
+            _entityPendingChanges.Clear();
         }
         #endregion
 

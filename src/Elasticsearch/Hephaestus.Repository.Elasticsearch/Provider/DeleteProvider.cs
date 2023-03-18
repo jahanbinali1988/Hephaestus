@@ -2,8 +2,6 @@
 using Hephaestus.Repository.Abstraction.Contract;
 using Hephaestus.Repository.Abstraction.Shared;
 using Hephaestus.Repository.Elasticsearch.Configure;
-using Hephaestus.Repository.Elasticsearch.Extensions;
-using Nest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Polly;

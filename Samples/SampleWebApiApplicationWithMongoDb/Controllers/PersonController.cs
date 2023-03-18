@@ -32,7 +32,7 @@ namespace SampleWebApiApplicationWithMongoDb.Controllers
         {
             var person = PersonEntity.Create(request.FirstName, request.LastName);
             await _personRepository.AddAsync(person, CancellationToken.None);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Created($"/Person/{person.Id}", person.Adapt<PersonViewModel>());
         }
@@ -43,15 +43,15 @@ namespace SampleWebApiApplicationWithMongoDb.Controllers
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
             if (person == null)
                 throw new EntityNotFoundException($"Unable to find Person with ID '{id}'");
-
+            
             person.Update(request.FirstName, request.LastName);
             await _personRepository.UpdateAsync(person, CancellationToken.None);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Created($"/Person/{person.Id}", person.Adapt<PersonViewModel>());
         }
 
-        [HttpDelete("/id")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromQuery] Guid id)
         {
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
@@ -60,12 +60,12 @@ namespace SampleWebApiApplicationWithMongoDb.Controllers
 
             person.Delete();
             await _personRepository.DeleteAsync(person, CancellationToken.None);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return NoContent();
         }
 
-        [HttpGet("/id")]
+        [HttpGet("{id}")]
         public async Task<PersonViewModel> Get([FromQuery] Guid id)
         {
             var person = await _personRepository.GetAsync(id, CancellationToken.None);
@@ -79,6 +79,31 @@ namespace SampleWebApiApplicationWithMongoDb.Controllers
             var persons = await _personRepository.GetListAsync(CancellationToken.None);
 
             return persons.Adapt<IEnumerable<PersonViewModel>>();
+        }
+
+        [HttpPost("{id}/order/{orderId}")]
+        public async Task Post([FromRoute] Guid id, [FromRoute] Guid orderId, [FromBody] CreatePersonRequest request, CancellationToken cancellationToken)
+        {
+            var person = await _personRepository.GetAsync(id, CancellationToken.None);
+            if (person == null)
+            {
+                await _unitOfWork.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    person = PersonEntity.Create(request.FirstName, request.LastName);
+                    await _personRepository.AddAsync(person, cancellationToken);
+
+                    await _unitOfWork.CommitTransactionAsync(cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+                    _logger.Log(LogLevel.Information, $"Could not find person with the given id {id}");
+                }
+            }
+
+            person.AddOrder(orderId);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

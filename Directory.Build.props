@@ -9,7 +9,7 @@
     <Product>Hephaestus.Repository Repository</Product>
 
     <!--Main framework version-->
-    <NetCoreAppTargetFramework>net5.0</NetCoreAppTargetFramework>
-    <MicrosoftPackagesVersion>net5.0</MicrosoftPackagesVersion>
+    <NetCoreAppTargetFramework>net6.0</NetCoreAppTargetFramework>
+    <MicrosoftPackagesVersion>net6.0</MicrosoftPackagesVersion>
   </PropertyGroup>
 </Project>
