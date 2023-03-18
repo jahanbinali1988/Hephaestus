@@ -1,5 +1,6 @@
 ﻿using Hephaestus.Repository.Abstraction.Contract;
 using Hephaestus.Repository.Abstraction.Exceptions;
+using Hephaestus.Repository.MongoDB.Contract;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,8 +20,8 @@ namespace SampleWebApiApplicationWithMongoDb.Controllers
     {
         private readonly ILogger<PersonController> _logger;
         private readonly IPersonRepository _personRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        public PersonController(IPersonRepository personRepository, IUnitOfWork unitOfWork, ILogger<PersonController> logger)
+        private readonly IMongoDbUnitOfWork _unitOfWork;
+        public PersonController(IPersonRepository personRepository, IMongoDbUnitOfWork unitOfWork, ILogger<PersonController> logger)
         {
             _personRepository = personRepository;
             _unitOfWork = unitOfWork;

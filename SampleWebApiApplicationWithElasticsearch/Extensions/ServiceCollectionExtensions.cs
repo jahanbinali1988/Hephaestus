@@ -1,6 +1,7 @@
 ﻿using Hephaestus.Repository.Abstraction.Contract;
 using Hephaestus.Repository.Abstraction.EventProcessing.DomainEvent;
 using Hephaestus.Repository.Elasticsearch.Configure;
+using Hephaestus.Repository.Elasticsearch.Contract;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ namespace SampleWebApiApplicationWithElasticsearch.Extensions
             };
 
             services.AddScoped<IPersonRepository, PersonRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IElasticsearchUnitOfWork, UnitOfWork>();
             services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
 
             services.AddMediatR(typeof(Startup).Assembly);

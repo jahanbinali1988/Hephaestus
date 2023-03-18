@@ -1,11 +1,11 @@
-﻿using Hephaestus.Repository.Abstraction.Contract;
-using Hephaestus.Repository.Abstraction.EventProcessing.DomainEvent;
+﻿using Hephaestus.Repository.Abstraction.EventProcessing.DomainEvent;
+using Hephaestus.Repository.Elasticsearch.Contract;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SampleWebApiApplicationWithElasticsearch.Persistence
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IElasticsearchUnitOfWork
     {
 
         private readonly IDomainEventsDispatcher _domainEventsDispatcher;
@@ -21,39 +21,5 @@ namespace SampleWebApiApplicationWithElasticsearch.Persistence
             await _domainEventsDispatcher.DispatchEventsAsync();
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
-        /// <summary>
-        /// Transaction in snot supported in this technology
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transaction in snot supported in this technology
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public Task CommitTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transaction in snot supported in this technology
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            throw new System.NotImplementedException();
-        }
-
     }
 }

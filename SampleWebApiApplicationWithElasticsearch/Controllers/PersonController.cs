@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using SampleWebApiApplicationWithElasticsearch.Models;
 using Mapster;
 using Hephaestus.Repository.Abstraction.Exceptions;
+using Hephaestus.Repository.Elasticsearch.Contract;
 
 namespace SampleWebApiApplicationWithElasticsearch.Controllers
 {
@@ -19,8 +20,8 @@ namespace SampleWebApiApplicationWithElasticsearch.Controllers
     {
         private readonly ILogger<PersonController> _logger;
         private readonly IPersonRepository _personRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        public PersonController(IUnitOfWork unitOfWork, ILogger<PersonController> logger, IPersonRepository personRepository)
+        private readonly IElasticsearchUnitOfWork _unitOfWork;
+        public PersonController(IElasticsearchUnitOfWork unitOfWork, ILogger<PersonController> logger, IPersonRepository personRepository)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;

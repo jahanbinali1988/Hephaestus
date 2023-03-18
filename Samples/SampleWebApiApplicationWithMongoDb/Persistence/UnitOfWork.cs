@@ -1,12 +1,13 @@
 ﻿using Hephaestus.Repository.Abstraction.Contract;
 using Hephaestus.Repository.Abstraction.EventProcessing.DomainEvent;
+using Hephaestus.Repository.MongoDB.Contract;
 using MongoDB.Driver;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SampleWebApiApplicationWithMongoDb.Persistence
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IMongoDbUnitOfWork
     {
 
         private readonly IDomainEventsDispatcher _domainEventsDispatcher;

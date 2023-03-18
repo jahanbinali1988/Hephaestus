@@ -1,6 +1,7 @@
 ﻿using Hephaestus.Repository.Abstraction.Contract;
 using Hephaestus.Repository.Abstraction.EventProcessing.DomainEvent;
 using Hephaestus.Repository.MongoDB.Configure;
+using Hephaestus.Repository.MongoDB.Contract;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +19,7 @@ namespace SampleWebApiApplicationWithMongoDb.Extensions
 
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddScoped<IPersonRepository, PersonRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IMongoDbUnitOfWork, UnitOfWork>();
             services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
             services.AddMongoClient(configuration);
 
