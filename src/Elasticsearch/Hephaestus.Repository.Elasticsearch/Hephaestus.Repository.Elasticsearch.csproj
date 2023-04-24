@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Abstraction\Hephaestus.Repository.Abstraction\Hephaestus.Repository.Abstraction.csproj" />
+	  <ProjectReference Include="..\..\Cache\Hephaestus.Cache\Hephaestus.Cache.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
